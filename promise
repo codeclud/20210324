@@ -1,0 +1,117 @@
+第一种 执行 resolve
+let flag = true
+let p = new Promise((resolve, reject) => {
+    if(flag){
+        console.log('flag is done');
+        resolve()
+    }else{
+        console.log('flag is not done');
+        reject()
+    }
+})
+
+p.then(()=>{
+    console.log('promise resolved');
+})
+结果 
+flag is done
+promise resolved
+第二种 执行 reject 有默认的promise的错误 需要加上 catch 去 捕捉
+
+let flag = false
+let p = new Promise((resolve, reject) => {
+    if(flag){
+        console.log('flag is done');
+        resolve()
+    }else{
+        console.log('flag is not done');
+        reject()
+    }
+})
+
+p.then(()=>{
+    console.log('promise resolved');
+})
+结果
+flag is not done
+(node:10020) UnhandledPromiseRejectionWarning: undefined
+(node:10020) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This
+ error originated either by throwing inside of an async function without a catch
+ block, or by rejecting a promise which was not handled with .catch(). To termin
+ate the node process on unhandled promise rejection, use the CLI flag `--unhandl
+ed-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejecti
+ons_mode). (rejection id: 2)
+(node:10020) [DEP0018] DeprecationWarning: Unhandled promise rejections are depr
+ecated. In the future, promise rejections that are not handled will terminate th
+e Node.js process with a non-zero exit code.
+第三种 加上 catch 
+let flag = false
+let p = new Promise((resolve, reject) => {
+    if(flag){
+        console.log('flag is done');
+        resolve()
+    }else{
+        console.log('flag is not done');
+        reject()
+    }
+})
+
+p.then(()=>{
+    console.log('promise resolved');
+}).catch((err)=>{
+    console.log(err);
+})
+结果 
+flag is not done
+undefined
+
+//promise (返回值)中 p 只是有relove 并没有接收promise的结果 要用 resolve 来执行 再then中 去接收返回值 而一般的函数 是直接return 来返回值
+let flag = true
+let p = new Promise((resolve, reject) => {
+    if(flag){
+
+        resolve('i am a promise result')
+    }else{
+        console.log('flag is not done');
+        reject()
+    }
+})
+
+p.then((message)=>{
+    console.log(`${message} is done`);
+}).catch(()=>{
+    console.log('promise reject');
+})
+结果 
+i am a promise result is done
+//promise 中 p 只是还有reject  要用 reject 来返回错误的信息 当然用catch 来接收 错误的信息
+
+let flag = false
+let p = new Promise((resolve, reject) => {
+    if(flag){
+
+        resolve('i am a promise result')
+    }else{
+        // console.log('flag is not done');
+        reject('reject is wrong ')
+    }
+})
+
+p.then((message)=>{
+    console.log(`${message} is done`);
+}).catch((msg)=>{
+    console.log(`${msg} promise reject is done`);
+})
+结果
+reject is wrong  promise reject is done
+
+fetch 标准的promise实例的使用
+
+f.fetch("https://www.wentitong.cn/api/userinfo")
+
+f.then((userInfo)=>{
+    return userInfo.json() // 这里的promise返回的是 对象所以用 json 转换 return返回之后到下一个then来处理
+}).then((userJson) => {
+    console.log(userJson); // 如果需要继续处理这个 数据 可以再 调用then
+})
+来源 
